@@ -1,0 +1,238 @@
+{
+	"info": {
+		"_postman_id": "2baa2f29-4390-48ed-bd0a-71d9a33fb880",
+		"name": "Platzi Fake Store API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46101819"
+	},
+	"item": [
+		{
+			"name": "Platzi",
+			"item": [
+				{
+					"name": "products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();\r",
+									"\r",
+									"// Validate status code\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"// Validate response structure\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(response).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"// Validate each product in the response\r",
+									"response.forEach(product => {\r",
+									"    pm.test(`Product with id ${product.id} has required properties`, function () {\r",
+									"        pm.expect(product).to.have.all.keys('id', 'title', 'slug', 'price', 'description', 'category', 'images', 'creationAt', 'updatedAt');\r",
+									"    });\r",
+									"\r",
+									"    pm.test(`Product id ${product.id} has valid price`, function () {\r",
+									"        pm.expect(product.price).to.be.a('number').and.to.be.greaterThan(0);\r",
+									"    });\r",
+									"\r",
+									"    pm.test(`Product id ${product.id} has valid category`, function () {\r",
+									"        pm.expect(product.category).to.have.all.keys('id', 'name', 'slug', 'image', 'creationAt', 'updatedAt');\r",
+									"        pm.expect(product.category.name).to.be.a('string').and.to.not.be.empty;\r",
+									"    });\r",
+									"\r",
+									"    pm.test(`Product id ${product.id} has valid images`, function () {\r",
+									"        pm.expect(product.images).to.be.an('array').that.is.not.empty;\r",
+									"        product.images.forEach(image => {\r",
+									"            pm.expect(image).to.be.a('string').and.to.include('http'); // Validate it's a URL\r",
+									"        });\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.escuelajs.co/api/v1/products",
+							"protocol": "https",
+							"host": [
+								"api",
+								"escuelajs",
+								"co"
+							],
+							"path": [
+								"api",
+								"v1",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "single prroduct",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has 'Content-Type' header\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.exist;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body is a valid JSON\", function () {\r",
+									"    pm.expect(pm.response.text()).to.not.be.empty;\r",
+									"    pm.expect(() => JSON.parse(pm.response.text())).to.not.throw();\r",
+									"});\r",
+									"\r",
+									"const responseJson = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Response body has expected properties\", function () {\r",
+									"    pm.expect(responseJson).to.have.property(\"id\");\r",
+									"    pm.expect(responseJson).to.have.property(\"title\");\r",
+									"    pm.expect(responseJson).to.have.property(\"price\");\r",
+									"    pm.expect(responseJson).to.have.property(\"description\");\r",
+									"    pm.expect(responseJson).to.have.property(\"category\");\r",
+									"    pm.expect(responseJson).to.have.property(\"images\").that.is.an(\"array\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "key",
+									"value": "",
+									"type": "string"
+								},
+								{
+									"key": "value",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.escuelajs.co/api/v1/products/9",
+							"protocol": "https",
+							"host": [
+								"api",
+								"escuelajs",
+								"co"
+							],
+							"path": [
+								"api",
+								"v1",
+								"products",
+								"9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();\r",
+									"\r",
+									"// Validate status code\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"// Validate response is an array\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(response).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"// Validate each user object in the response\r",
+									"response.forEach(user => {\r",
+									"    pm.test(\"User object has required fields\", function () {\r",
+									"        pm.expect(user).to.have.all.keys('id', 'email', 'password', 'name', 'role', 'avatar', 'creationAt', 'updatedAt');\r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"User id is a number\", function () {\r",
+									"        pm.expect(user.id).to.be.a('number');\r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"User email is a valid string\", function () {\r",
+									"        pm.expect(user.email).to.be.a('string');\r",
+									"        pm.expect(user.email).to.include('@');\r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"User name is a valid string\", function () {\r",
+									"        pm.expect(user.name).to.be.a('string');\r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"User role is a valid string\", function () {\r",
+									"        pm.expect(user.role).to.be.a('string');\r",
+									"    });\r",
+									"\r",
+									"\r",
+									"    pm.test(\"User creationAt is a valid date\", function () {\r",
+									"        const creationDate = new Date(user.creationAt);\r",
+									"        pm.expect(creationDate).to.be.a('date');\r",
+									"        pm.expect(creationDate.toString()).to.not.equal('Invalid Date');\r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"User updatedAt is a valid date\", function () {\r",
+									"        const updatedDate = new Date(user.updatedAt);\r",
+									"        pm.expect(updatedDate).to.be.a('date');\r",
+									"        pm.expect(updatedDate.toString()).to.not.equal('Invalid Date');\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.escuelajs.co/api/v1/users",
+							"protocol": "https",
+							"host": [
+								"api",
+								"escuelajs",
+								"co"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
